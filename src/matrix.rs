@@ -3,11 +3,11 @@ pub type Point = (usize, usize);
 /// A matrix of values. The matrix is stored in row-major order.
 pub struct Matrix<T> {
     /// The width of the matrix.
-    pub width: usize,
+    width: usize,
     /// The height of the matrix.
-    pub height: usize,
+    height: usize,
     /// The values of the matrix.
-    pub values: Vec<T>,
+    values: Vec<T>,
 }
 
 /// Public API for Matrix.
