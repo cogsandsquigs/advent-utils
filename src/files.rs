@@ -5,6 +5,8 @@ use std::{
     path::Path,
 };
 
+/// Read the contents of a file into a `String`. Takes in anything that is a valid `Path` and can be
+/// cloned, which includes `&str`, `String`, `PathBuf`, etc.
 pub fn read<P>(path: P) -> Result<String>
 where
     P: AsRef<Path> + Debug + Clone,
