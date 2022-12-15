@@ -66,14 +66,14 @@ impl<T> Grid<T> {
 
     /// Returns the set of all neighbors orthogonal to the given coordinates.
     /// The neighbors are returned in the order of left, right, up, down.
-    /// TODO: Change points to be i32 instead of usize.
+    /// TODO: Change points to be i64 instead of usize.
     pub fn orthogonal_neighbors(&self, point: Point) -> Vec<Point> {
         #[allow(clippy::absurd_extreme_comparisons)]
         #[allow(unused_comparisons)]
         point
             .orthogonal_neighbors()
             .into_iter()
-            .filter(|p| p.x >= 0 && p.x < self.width as i32 && p.y >= 0 && p.y < self.height as i32)
+            .filter(|p| p.x >= 0 && p.x < self.width as i64 && p.y >= 0 && p.y < self.height as i64)
             .collect()
     }
 
@@ -85,7 +85,7 @@ impl<T> Grid<T> {
         point
             .diagonal_neighbors()
             .into_iter()
-            .filter(|p| p.x >= 0 && p.x < self.width as i32 && p.y >= 0 && p.y < self.height as i32)
+            .filter(|p| p.x >= 0 && p.x < self.width as i64 && p.y >= 0 && p.y < self.height as i64)
             .collect()
     }
 }

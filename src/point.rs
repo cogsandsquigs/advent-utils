@@ -1,23 +1,23 @@
 use core::fmt::{Display, Formatter};
 
 /// A point in a 2D grid.
-/// TODO: Change points to be i32 instead of usize.
+/// TODO: Change points to be i64 instead of usize.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Point {
-    pub x: i32,
-    pub y: i32,
+    pub x: i64,
+    pub y: i64,
 }
 
 /// Public API for Point.
 impl Point {
     /// Returns a new `Point`.
-    pub fn new(x: i32, y: i32) -> Self {
+    pub fn new(x: i64, y: i64) -> Self {
         Self { x, y }
     }
 
     /// Computes the Manhattan distance between two points.
-    pub fn manhattan_distance(&self, other: &Self) -> u32 {
-        (self.x - other.x).unsigned_abs() + (self.y - other.y).unsigned_abs()
+    pub fn manhattan_distance(&self, other: &Self) -> i64 {
+        (self.x - other.x).abs() + (self.y - other.y).abs()
     }
 
     /// Computes the set of all integer-valued points between two points.
@@ -33,8 +33,8 @@ impl Point {
         for i in 0..=x_diff {
             for j in 0..=y_diff {
                 points.push(Self::new(
-                    self.x + i as i32 * x_step,
-                    self.y + j as i32 * y_step,
+                    self.x + i as i64 * x_step,
+                    self.y + j as i64 * y_step,
                 ));
             }
         }
@@ -71,13 +71,13 @@ impl Point {
     }
 }
 
-impl From<(i32, i32)> for Point {
-    fn from((x, y): (i32, i32)) -> Self {
+impl From<(i64, i64)> for Point {
+    fn from((x, y): (i64, i64)) -> Self {
         Self { x, y }
     }
 }
 
-impl From<Point> for (i32, i32) {
+impl From<Point> for (i64, i64) {
     fn from(point: Point) -> Self {
         (point.x, point.y)
     }
