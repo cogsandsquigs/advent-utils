@@ -31,8 +31,8 @@ impl Point {
         for i in 0..=x_diff {
             for j in 0..=y_diff {
                 points.push(Self::new(
-                    (self.x + i as i32 * x_step),
-                    (self.y + j as i32 * y_step),
+                    self.x + i as i32 * x_step,
+                    self.y + j as i32 * y_step,
                 ));
             }
         }
@@ -49,32 +49,22 @@ impl Point {
     /// Returns the set of all neighbors orthogonal to the given coordinates.
     /// The neighbors are returned in the order of left, right, up, down.
     pub fn orthogonal_neighbors(&self) -> Vec<Self> {
-        let mut neighbors: Vec<Self> = vec![];
-
-        neighbors.push(Self::new(self.x - 1, self.y));
-
-        neighbors.push(Self::new(self.x + 1, self.y));
-
-        neighbors.push(Self::new(self.x, self.y - 1));
-
-        neighbors.push(Self::new(self.x, self.y + 1));
-
-        neighbors
+        vec![
+            Self::new(self.x - 1, self.y),
+            Self::new(self.x + 1, self.y),
+            Self::new(self.x, self.y - 1),
+            Self::new(self.x, self.y + 1),
+        ]
     }
 
     /// Returns the set of all neighbors diagonal to the given coordinates.
     /// The neighbors are returned in the order of top-left, top-right, bottom-left, bottom-right.
     pub fn diagonal_neighbors(&self) -> Vec<Self> {
-        let mut neighbors: Vec<Self> = vec![];
-
-        neighbors.push(Self::new(self.x - 1, self.y - 1));
-
-        neighbors.push(Self::new(self.x + 1, self.y - 1));
-
-        neighbors.push(Self::new(self.x - 1, self.y + 1));
-
-        neighbors.push(Self::new(self.x + 1, self.y + 1));
-
-        neighbors
+        vec![
+            Self::new(self.x - 1, self.y - 1),
+            Self::new(self.x + 1, self.y - 1),
+            Self::new(self.x - 1, self.y + 1),
+            Self::new(self.x + 1, self.y + 1),
+        ]
     }
 }
