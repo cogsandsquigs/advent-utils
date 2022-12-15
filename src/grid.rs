@@ -22,7 +22,7 @@ impl<T> Grid<T> {
         Self {
             width,
             height,
-            values: vec![T::default(); width * height],
+            values: vec![T::default(); width * height + 1],
         }
     }
 
@@ -103,5 +103,15 @@ impl<T> Index<Point> for Grid<T> {
 impl<T> IndexMut<Point> for Grid<T> {
     fn index_mut(&mut self, point: Point) -> &mut Self::Output {
         self.get_mut(point)
+    }
+}
+
+/// Iterates over all the rows of the matrix.
+impl<T> IntoIterator for Grid<T> {
+    type Item = T;
+    type IntoIter = std::vec::IntoIter<T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.values.into_iter()
     }
 }

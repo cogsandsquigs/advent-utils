@@ -1,3 +1,5 @@
+use core::fmt::{Display, Formatter};
+
 /// A point in a 2D grid.
 /// TODO: Change points to be i32 instead of usize.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -66,5 +68,23 @@ impl Point {
             Self::new(self.x - 1, self.y + 1),
             Self::new(self.x + 1, self.y + 1),
         ]
+    }
+}
+
+impl From<(i32, i32)> for Point {
+    fn from((x, y): (i32, i32)) -> Self {
+        Self { x, y }
+    }
+}
+
+impl From<Point> for (i32, i32) {
+    fn from(point: Point) -> Self {
+        (point.x, point.y)
+    }
+}
+
+impl Display for Point {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "({}, {})", self.x, self.y)
     }
 }
