@@ -50,8 +50,8 @@ pub fn solution(args: TokenStream, item: TokenStream) -> TokenStream {
             println!(
                 "Time elapsed: {}s {}ms {}µs {}ns",
                 elapsed.as_secs(),
-                elapsed.as_millis(),
-                elapsed.as_micros(),
+                elapsed.as_millis() % 1000, // get only the last 3 digits, which are the milliseconds
+                elapsed.as_micros() % 1000, // get only the last 3 digits, which are the microseconds
                 elapsed.as_nanos() % 1000, // get only the last 3 digits, which are the nanoseconds
             );
 
