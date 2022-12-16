@@ -1,0 +1,12 @@
+[package]
+	edition = "2021"
+	name    = "advent-utils-macros"
+	version = "0.0.0"
+
+	# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+	quote = "1.0.21"
+	syn   = { version = "1.0.105", features = ["extra-traits", "full"] }
+[lib]
+	crate_type = ["proc-macro"]
