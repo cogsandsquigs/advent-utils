@@ -1,5 +1,6 @@
 pub mod files;
 pub mod grid;
+pub mod heap;
 pub mod parsing;
 pub mod point;
 
