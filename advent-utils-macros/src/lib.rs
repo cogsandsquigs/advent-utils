@@ -1,40 +1,52 @@
 use proc_macro::TokenStream;
 use quote::{format_ident, quote};
-use syn::{parse_macro_input, ItemFn, Meta};
-
-#[proc_macro_attribute]
-pub fn show_streams(attr: TokenStream, item: TokenStream) -> TokenStream {
-    println!("attr: \"{}\"", attr.to_string());
-    println!("item: \"{}\"", item.to_string());
-    item
-}
+use syn::{parse_macro_input, AttributeArgs, ItemFn, Meta, MetaNameValue, NestedMeta};
 
 /// Wraps a solution function with a timer, as well as an output formatter/logger.
 /// Measures the time it takes to run the function (up to the nanosecond), and
 /// prints the result to stdout.
 /// TODO: Pase attrs to get the day and part number, and print that as well.
 #[proc_macro_attribute]
-pub fn solution(attrs: TokenStream, item: TokenStream) -> TokenStream {
-    let input: ItemFn = parse_macro_input!(item as syn::ItemFn);
+pub fn solution(args: TokenStream, item: TokenStream) -> TokenStream {
+    let input: ItemFn = parse_macro_input!(item);
+    let args: AttributeArgs = parse_macro_input!(args);
+
     // Actual function name so we can replace it with our wrapper
     let fn_name = input.clone().sig.ident;
 
     // The inner function stuff that actually computes the solution
-    let inner_fn_name = format_ident!("{}_wrapper", fn_name);
+    let inner_fn_name = format_ident!("{}_inner", fn_name);
     let inner_fn_block = input.block;
+    let inner_fn_return = input.sig.output;
 
-    // // The day parsed from the attribute
-    // let attrs = parse_macro_input!(attrs as Meta);
+    let day = if let NestedMeta::Meta(Meta::NameValue(MetaNameValue { path, lit, .. })) = &args[0] {
+        if path.is_ident("day") {
+            lit
+        } else {
+            panic!("expected name-value style attribute with name \"day\"");
+        }
+    } else {
+        panic!("Expected a name-value style attribute");
+    };
 
-    // println!("attr: \"{:?}\"", attrs);
+    let part = if let NestedMeta::Meta(Meta::NameValue(MetaNameValue { path, lit, .. })) = &args[1]
+    {
+        if path.is_ident("part") {
+            lit
+        } else {
+            panic!("expected name-value style attribute with name \"part\"");
+        }
+    } else {
+        panic!("Expected a name-value style attribute");
+    };
 
     quote! {
-        fn #fn_name(input: &str) -> i64 {
+        fn #fn_name(input: &str) -> String {
             let start = std::time::Instant::now();
             let result = #inner_fn_name(input);
             let elapsed = start.elapsed();
 
-            println!("{}: {}", stringify!(#fn_name), result);
+            println!("Day {}, part {} solution: {}", #day, #part, result);
             println!(
                 "Time elapsed: {}s {}ms {}µs {}ns",
                 elapsed.as_secs(),
@@ -43,10 +55,10 @@ pub fn solution(attrs: TokenStream, item: TokenStream) -> TokenStream {
                 elapsed.as_nanos() % 1000, // get only the last 3 digits, which are the nanoseconds
             );
 
-            result
+            result.to_string()
         }
 
-        fn #inner_fn_name(input: &str) -> i64 {
+        fn #inner_fn_name(input: &str) #inner_fn_return {
             #inner_fn_block
         }
     }
