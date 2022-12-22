@@ -1,6 +1,10 @@
 use crate::point::Point;
-use std::ops::{Index, IndexMut};
+use std::{
+    ops::{Index, IndexMut},
+    vec::IntoIter,
+};
 
+#[derive(Debug, Clone, PartialEq, Eq)]
 /// A matrix of values. The matrix is stored in row-major order.
 pub struct Grid<T> {
     /// The width of the matrix.
@@ -107,11 +111,33 @@ impl<T> IndexMut<Point> for Grid<T> {
 }
 
 /// Iterates over all the rows of the matrix.
-impl<T> IntoIterator for Grid<T> {
-    type Item = T;
-    type IntoIter = std::vec::IntoIter<T>;
+impl<T> IntoIterator for Grid<T>
+where
+    T: Clone,
+{
+    type Item = Vec<T>;
+    type IntoIter = IntoIter<Self::Item>;
 
     fn into_iter(self) -> Self::IntoIter {
-        self.values.into_iter()
+        self.values
+            .chunks(self.width)
+            .map(|c| c.to_vec())
+            .collect::<Vec<Vec<T>>>()
+            .into_iter()
+    }
+}
+
+impl<T> TryFrom<Vec<Vec<T>>> for Grid<T>
+where
+    T: Clone,
+{
+    type Error = String;
+
+    fn try_from(v: Vec<Vec<T>>) -> Result<Self, Self::Error> {
+        Ok(Grid {
+            values: v.concat(),
+            width: v[0].len(),
+            height: v.len(),
+        })
     }
 }

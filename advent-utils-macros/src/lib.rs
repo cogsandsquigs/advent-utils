@@ -45,7 +45,6 @@ pub fn solution(args: TokenStream, item: TokenStream) -> TokenStream {
             use advent_utils::files::read;
             let is_test = std::env::args().nth(1) == Some("test".to_string());
             let input = read(&format!("day-{}/input{}.txt", #day, if is_test { ".test" } else { "" })).unwrap();
-            println!("{}", is_test);
 
             let start = std::time::Instant::now();
             let result = #inner_fn_name(&input);
