@@ -44,23 +44,23 @@ impl<T> Grid<T> {
     }
 
     /// Returns the value at the given coordinates.
-    pub fn get(&self, point: Point) -> &T {
+    pub fn get(&self, point: Point<usize>) -> &T {
         &self.values[point.y as usize * self.width + point.x as usize]
     }
 
     /// Returns a mutable reference to the value at the given coordinates.
-    pub fn get_mut(&mut self, point: Point) -> &mut T {
+    pub fn get_mut(&mut self, point: Point<usize>) -> &mut T {
         &mut self.values[point.y as usize * self.width + point.x as usize]
     }
 
     /// Returns the value at the given coordinates.
-    pub fn set(&mut self, point: Point, value: T) {
+    pub fn set(&mut self, point: Point<usize>, value: T) {
         self.values[point.y as usize * self.width + point.x as usize] = value;
     }
 
     /// Returns the set of all neighbors of the given coordinates. The neighbors are returned in the
     /// order of left, right, up, down, top-left, top-right, bottom-left, bottom-right.
-    pub fn neighbors(&self, point: Point) -> Vec<Point> {
+    pub fn neighbors(&self, point: Point<usize>) -> Vec<Point<usize>> {
         [
             self.orthogonal_neighbors(point),
             self.diagonal_neighbors(point),
@@ -71,41 +71,37 @@ impl<T> Grid<T> {
     /// Returns the set of all neighbors orthogonal to the given coordinates.
     /// The neighbors are returned in the order of left, right, up, down.
     /// TODO: Change points to be i64 instead of usize.
-    pub fn orthogonal_neighbors(&self, point: Point) -> Vec<Point> {
-        #[allow(clippy::absurd_extreme_comparisons)]
-        #[allow(unused_comparisons)]
+    pub fn orthogonal_neighbors(&self, point: Point<usize>) -> Vec<Point<usize>> {
         point
             .orthogonal_neighbors()
             .into_iter()
-            .filter(|p| p.x >= 0 && p.x < self.width as i64 && p.y >= 0 && p.y < self.height as i64)
+            .filter(|p| p.x < self.width && p.y < self.height)
             .collect()
     }
 
     /// Returns the set of all neighbors diagonal to the given coordinates.
     /// The neighbors are returned in the order of top-left, top-right, bottom-left, bottom-right.
-    pub fn diagonal_neighbors(&self, point: Point) -> Vec<Point> {
-        #[allow(clippy::absurd_extreme_comparisons)]
-        #[allow(unused_comparisons)]
+    pub fn diagonal_neighbors(&self, point: Point<usize>) -> Vec<Point<usize>> {
         point
             .diagonal_neighbors()
             .into_iter()
-            .filter(|p| p.x >= 0 && p.x < self.width as i64 && p.y >= 0 && p.y < self.height as i64)
+            .filter(|p| p.x < self.width && p.y < self.height)
             .collect()
     }
 }
 
 /// Indexing implementation for Grid.
-impl<T> Index<Point> for Grid<T> {
+impl<T> Index<Point<usize>> for Grid<T> {
     type Output = T;
 
-    fn index(&self, point: Point) -> &Self::Output {
+    fn index(&self, point: Point<usize>) -> &Self::Output {
         self.get(point)
     }
 }
 
 /// Mutable indexing implementation for Grid.
-impl<T> IndexMut<Point> for Grid<T> {
-    fn index_mut(&mut self, point: Point) -> &mut Self::Output {
+impl<T> IndexMut<Point<usize>> for Grid<T> {
+    fn index_mut(&mut self, point: Point<usize>) -> &mut Self::Output {
         self.get_mut(point)
     }
 }
