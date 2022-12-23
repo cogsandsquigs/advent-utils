@@ -1,5 +1,5 @@
 use core::fmt::{Display, Formatter};
-use num_traits::{real::Real, Float, Num, Signed};
+use num_traits::Num;
 
 /// A point in a 2D grid.
 /// TODO: Change points to be T instead of usize.

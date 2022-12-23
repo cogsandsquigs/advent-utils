@@ -88,6 +88,20 @@ impl<T> Grid<T> {
             .filter(|p| p.x < self.width && p.y < self.height)
             .collect()
     }
+
+    /// Replaces every value that matches `predicate` with the new value `value`
+    pub fn replace(&mut self, mut predicate: impl FnMut(&T) -> bool, value: T)
+    where
+        T: Clone,
+    {
+        self.values.iter_mut().for_each(|x| {
+            let change = predicate(x);
+
+            if change {
+                *x = value.clone()
+            }
+        })
+    }
 }
 
 /// Indexing implementation for Grid.
