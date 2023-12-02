@@ -13,6 +13,7 @@ pub fn solution(args: TokenStream, item: TokenStream) -> TokenStream {
 
     // Actual function name so we can replace it with our wrapper
     let fn_name = input.clone().sig.ident;
+    let fn_args = input.clone().sig.inputs;
 
     // The inner function stuff that actually computes the solution
     let inner_fn_name = format_ident!("{}_inner", fn_name);
@@ -62,7 +63,7 @@ pub fn solution(args: TokenStream, item: TokenStream) -> TokenStream {
             result.to_string()
         }
 
-        fn #inner_fn_name(input: &str) #inner_fn_return {
+        fn #inner_fn_name(#fn_args) #inner_fn_return {
             #inner_fn_block
         }
     }
