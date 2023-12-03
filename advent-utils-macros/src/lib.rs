@@ -51,7 +51,6 @@ pub fn solution(args: TokenStream, item: TokenStream) -> TokenStream {
             let result = #inner_fn_name(&input);
             let elapsed = start.elapsed();
 
-            
             println!("Day {}, part {} solution: {}", #day, #part, result);
             println!(
                 "Time elapsed: {}s {}ms {}µs {}ns",
