@@ -150,6 +150,23 @@ impl Grid<bool> {
             .filter(|(_, x)| **x)
             .map(|(i, _)| Point::new(i % self.width, i / self.width))
     }
+
+    /// Print out true points in a grid.
+    pub fn print(&self) {
+        for y in 0..self.height {
+            for x in 0..self.width {
+                print!(
+                    "{}",
+                    if *self.get(Point::new(x, y)) {
+                        '#'
+                    } else {
+                        '.'
+                    }
+                );
+            }
+            println!();
+        }
+    }
 }
 
 /// Indexing implementation for Grid.
