@@ -30,6 +30,33 @@ impl<T> Grid<T> {
         }
     }
 
+    /// Returns a new `Grid` from a string. The string is split into lines, and each line is split
+    /// into characters. The values of the matrix are precomputed with the given function.
+    pub fn from_str_precomp<F>(s: &str, f: F) -> Self
+    where
+        F: Fn(char) -> T,
+    {
+        let mut values = Vec::new();
+        let mut width = 0;
+        let mut height = 0;
+
+        for line in s.lines() {
+            width = 0; // Reset from prev. iteration
+            height += 1;
+
+            for c in line.chars() {
+                width += 1;
+                values.push(f(c));
+            }
+        }
+
+        Self {
+            width,
+            height,
+            values,
+        }
+    }
+
     /// Returns a new `Grid` with the given width and height. The values of the matrix are
     /// initialized with the given value.
     pub fn new_with_value(width: usize, height: usize, value: T) -> Self
@@ -70,7 +97,6 @@ impl<T> Grid<T> {
 
     /// Returns the set of all neighbors orthogonal to the given coordinates.
     /// The neighbors are returned in the order of left, right, up, down.
-    /// TODO: Change points to be i64 instead of usize.
     pub fn orthogonal_neighbors(&self, point: Point<usize>) -> Vec<Point<usize>> {
         point
             .orthogonal_neighbors()
@@ -101,6 +127,28 @@ impl<T> Grid<T> {
                 *x = value.clone()
             }
         })
+    }
+}
+
+/// Public API for Grid over `char`.
+impl Grid<char> {
+    /// Returns a new `Grid` from a string. The string is split into lines, and each line is split
+    /// into characters. The values of the matrix are characters.
+    pub fn from_str(s: &str) -> Self {
+        Grid::from_str_precomp(s, |c| c)
+    }
+}
+
+/// Public API for Grid over `bool`.
+impl Grid<bool> {
+    /// Returns a list of all `Point`s where the value is `true`.
+    /// The points are returned in row-major order.
+    pub fn true_points(&self) -> impl Iterator<Item = Point<usize>> + '_ {
+        self.values
+            .iter()
+            .enumerate()
+            .filter(|(_, x)| **x)
+            .map(|(i, _)| Point::new(i % self.width, i / self.width))
     }
 }
 
