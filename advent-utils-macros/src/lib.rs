@@ -20,17 +20,7 @@ pub fn solution(args: TokenStream, item: TokenStream) -> TokenStream {
     let inner_fn_block = input.block;
     let inner_fn_return = input.sig.output;
 
-    let day = if let NestedMeta::Meta(Meta::NameValue(MetaNameValue { path, lit, .. })) = &args[0] {
-        if path.is_ident("day") {
-            lit
-        } else {
-            panic!("expected name-value style attribute with name \"day\"");
-        }
-    } else {
-        panic!("Expected a name-value style attribute");
-    };
-
-    let part = if let NestedMeta::Meta(Meta::NameValue(MetaNameValue { path, lit, .. })) = &args[1]
+    let part = if let NestedMeta::Meta(Meta::NameValue(MetaNameValue { path, lit, .. })) = &args[0]
     {
         if path.is_ident("part") {
             lit
@@ -44,14 +34,21 @@ pub fn solution(args: TokenStream, item: TokenStream) -> TokenStream {
     quote! {
         fn #fn_name() -> String {
             use advent_utils::files::read;
+            let day = std::env::var("CARGO_PKG_NAME")
+                          .unwrap()
+                          .split("-")
+                          .nth(1)
+                          .unwrap()
+                          .parse::<i32>()
+                          .unwrap();
             let is_test = std::env::args().nth(1) == Some("test".to_string());
-            let input = read(&format!("day-{:0>2}/input{}.txt", #day, if is_test { ".test" } else { "" })).unwrap();
+            let input = read(&format!("day-{:0>2}/input{}.txt", day, if is_test { ".test" } else { "" })).unwrap();
 
             let start = std::time::Instant::now();
             let result = #inner_fn_name(&input);
             let elapsed = start.elapsed();
 
-            println!("Day {}, part {} solution: {}", #day, #part, result);
+            println!("Day {}, part {} solution: {}", day, #part, result);
             println!(
                 "Time elapsed: {}s {}ms {}µs {}ns",
                 elapsed.as_secs(),
