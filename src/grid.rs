@@ -1,7 +1,8 @@
 use crate::point::Point;
 use std::{
+    fmt::{Display, Formatter},
+    iter::IntoIterator,
     ops::{Index, IndexMut},
-    vec::IntoIter,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -130,6 +131,23 @@ impl<T> Grid<T> {
     }
 }
 
+/// Display implementation for Grid.
+impl<T> Display for Grid<T>
+where
+    T: Display,
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        for y in 0..self.height {
+            for x in 0..self.width {
+                write!(f, "{}", self.get(Point::new(x, y)))?;
+            }
+            writeln!(f)?;
+        }
+
+        Ok(())
+    }
+}
+
 /// Public API for Grid over `char`.
 impl Grid<char> {
     /// Returns a new `Grid` from a string. The string is split into lines, and each line is split
@@ -185,19 +203,21 @@ impl<T> IndexMut<Point<usize>> for Grid<T> {
     }
 }
 
-/// Iterates over all the rows of the matrix.
+/// Iterates over all the elements of the matrix, in row-major order.
+/// Returns an element and its associated coordinates.
 impl<T> IntoIterator for Grid<T>
 where
     T: Clone,
 {
-    type Item = Vec<T>;
-    type IntoIter = IntoIter<Self::Item>;
+    type Item = (Point<usize>, T);
+    type IntoIter = std::vec::IntoIter<(Point<usize>, T)>;
 
     fn into_iter(self) -> Self::IntoIter {
         self.values
-            .chunks(self.width)
-            .map(|c| c.to_vec())
-            .collect::<Vec<Vec<T>>>()
+            .into_iter()
+            .enumerate()
+            .map(|(i, x)| (Point::new(i % self.width, i / self.width), x))
+            .collect::<Vec<_>>()
             .into_iter()
     }
 }
