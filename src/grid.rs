@@ -222,6 +222,22 @@ where
     }
 }
 
+/// Iterates over all the elements of the matrix, in row-major order.
+/// Returns an element and its associated coordinates.
+impl<'a, T> IntoIterator for &'a Grid<T> {
+    type Item = (Point<usize>, &'a T);
+    type IntoIter = std::vec::IntoIter<(Point<usize>, &'a T)>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.values
+            .iter()
+            .enumerate()
+            .map(|(i, x)| (Point::new(i % self.width, i / self.width), x))
+            .collect::<Vec<_>>()
+            .into_iter()
+    }
+}
+
 impl<T> TryFrom<Vec<Vec<T>>> for Grid<T>
 where
     T: Clone,
