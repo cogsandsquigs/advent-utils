@@ -81,6 +81,23 @@ impl<T> Grid<T> {
         &mut self.values[point.y as usize * self.width + point.x as usize]
     }
 
+    /// Returns a row of the matrix.
+    pub fn get_row(&self, row: usize) -> &[T] {
+        &self.values[row * self.width..(row + 1) * self.width]
+    }
+
+    /// Returns a column of the matrix.
+    pub fn get_col(&self, col: usize) -> Vec<&T> {
+        let mut col_vals = Vec::new();
+
+        for row in 0..self.height {
+            let idx = row * self.width + col;
+            col_vals.push(&self.values[idx])
+        }
+
+        col_vals
+    }
+
     /// Returns the value at the given coordinates.
     pub fn set(&mut self, point: Point<usize>, value: T) {
         self.values[point.y as usize * self.width + point.x as usize] = value;
